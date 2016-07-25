@@ -69,6 +69,7 @@ class OAuthProvider implements AuthenticationProviderInterface
             if ($accessToken = $this->serverService->verifyAccessToken($tokenString)) {
                 $scope = $accessToken->getScope();
                 $user = $accessToken->getUser();
+                $user = $this->userProvider->findUserBy(['id' => $user->getId()]);
 
                 if (null !== $user) {
                     try {
