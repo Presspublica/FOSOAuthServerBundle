@@ -77,9 +77,13 @@ class AuthorizeController implements ContainerAwareInterface
         );
 
         if ($event->isAuthorizedClient()) {
-            return $this->container
-                ->get('fos_oauth_server.server')
-                ->finishClientAuthorization(true, $user, $request, $scope);
+            try {
+                return $this->container
+                    ->get('fos_oauth_server.server')
+                    ->finishClientAuthorization(true, $user, $request, $scope);
+            } catch (OAuth2ServerException $e) {
+                return new Response($e->getMessage(), 400);
+            }
         }
 
         if (true === $formHandler->process()) {
